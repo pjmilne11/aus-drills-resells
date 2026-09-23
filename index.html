@@ -1,0 +1,1556 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBSIDIAN — Authenticated Luxury Resale</title>
+<meta name="description" content="OBSIDIAN is the private marketplace for authenticated pre-owned luxury. Active drops of Chrome Hearts, Corteiz, Rolex, Trapstar and Louis Vuitton.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230A0A0A'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C9A961'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/* ============================================================
+   TAILWIND CONFIG — design tokens
+============================================================ */
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        obsidian: '#0A0A0A',
+        coal:     '#101010',
+        charcoal: '#141414',
+        gold: { light:'#E6CE96', DEFAULT:'#C9A961', dark:'#8F7434' },
+        platinum:'#D9DDE3'
+      },
+      fontFamily: {
+        display: ['"Space Grotesk"','Inter','sans-serif'],
+        body: ['Inter','system-ui','sans-serif']
+      },
+      boxShadow: {
+        gold: '0 0 24px rgba(201,169,97,0.25)',
+        lift: '0 24px 48px -12px rgba(0,0,0,0.7)'
+      }
+    }
+  }
+}
+</script>
+<style>
+/* ============================================================
+   GLOBAL / UTILITY STYLES
+============================================================ */
+:root{ --gold:#C9A961; }
+html{ scroll-behavior:smooth; }
+body{ background:#0A0A0A; color:#FFFFFF; font-family:Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+.font-display{ font-family:'Space Grotesk',Inter,sans-serif; }
+.tnum{ font-variant-numeric:tabular-nums; }
+::selection{ background:#C9A961; color:#0A0A0A; }
+input,select,button{ outline:none; }
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ outline:1px solid rgba(201,169,97,.6); outline-offset:2px; }
+
+.no-scrollbar::-webkit-scrollbar{ display:none; }
+.no-scrollbar{ -ms-overflow-style:none; scrollbar-width:none; }
+.drawer-scroll::-webkit-scrollbar{ width:5px; }
+.drawer-scroll::-webkit-scrollbar-thumb{ background:#2b2b2b; border-radius:99px; }
+.drawer-scroll::-webkit-scrollbar-track{ background:transparent; }
+
+/* Marquees */
+.marquee-track{ animation:marquee 36s linear infinite; }
+.marquee-track.fast{ animation-duration:22s; }
+@keyframes marquee{ to{ transform:translateX(-50%); } }
+
+/* Outlined ghost typography */
+.outline-text{ color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.16); }
+.outline-text-2{ color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.30); }
+.outline-gold{ color:transparent; -webkit-text-stroke:1px rgba(201,169,97,.55); }
+
+/* Film grain */
+.noise{ position:fixed; inset:0; z-index:100; pointer-events:none; opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Hero grid backdrop */
+.hero-grid{ background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px); background-size:76px 76px; }
+
+/* Scroll reveal */
+.reveal{ opacity:0; transform:translateY(20px); transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1); }
+.reveal.in{ opacity:1; transform:none; }
+
+/* Wishlist active state */
+.wished svg{ fill:#C9A961; stroke:#C9A961; }
+
+/* Accordions */
+details.acc summary{ list-style:none; cursor:pointer; }
+details.acc summary::-webkit-details-marker{ display:none; }
+details.acc .acc-plus{ transition:transform .3s ease; }
+details.acc[open] .acc-plus{ transform:rotate(45deg); }
+
+/* PDP size buttons */
+.size-btn[aria-pressed="true"]{ background:#C9A961 !important; color:#0A0A0A !important; border-color:#C9A961 !important; }
+
+/* Scarcity pulse dot */
+@keyframes pulseDot{ 0%,100%{opacity:1} 50%{opacity:.25} }
+.pulse-dot{ animation:pulseDot 1.5s ease-in-out infinite; }
+
+/* Gold button shine sweep */
+.btn-gold{ position:relative; overflow:hidden; }
+.btn-gold::after{ content:''; position:absolute; inset:0; background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.35) 50%,transparent 60%); transform:translateX(-130%); transition:transform .65s ease; }
+.btn-gold:hover::after{ transform:translateX(130%); }
+
+/* Cart drawer / modals */
+.drawer{ transition:transform .45s cubic-bezier(.22,1,.36,1); }
+.overlay{ transition:opacity .35s ease; }
+.fade-pop{ animation:fadePop .35s cubic-bezier(.22,1,.36,1); }
+@keyframes fadePop{ from{ opacity:0; transform:translateY(10px) scale(.985);} to{ opacity:1; transform:none;} }
+
+/* Checkout success draw-on animation */
+.check-circle{ stroke-dasharray:166; stroke-dashoffset:166; animation:dash .8s ease forwards; }
+.check-mark{ stroke-dasharray:50; stroke-dashoffset:50; animation:dash .45s .65s ease forwards; }
+@keyframes dash{ to{ stroke-dashoffset:0; } }
+
+/* Toast slide-up */
+.toast{ animation:toastIn .35s cubic-bezier(.22,1,.36,1); }
+.toast.leaving{ animation:toastOut .3s ease forwards; }
+@keyframes toastIn{ from{ opacity:0; transform:translateY(14px) scale(.97);} to{ opacity:1; transform:none;} }
+@keyframes toastOut{ to{ opacity:0; transform:translateY(10px) scale(.97);} }
+
+@media (max-width:1023px){
+  .filter-panel{ transition:transform .45s cubic-bezier(.22,1,.36,1); }
+}
+</style>
+</head>
+
+<body class="bg-obsidian text-white font-body min-h-screen flex flex-col">
+<div class="noise"></div>
+
+<!-- ============================================================
+     COMPONENT: ANNOUNCEMENT + HEADER
+============================================================ -->
+<header class="sticky top-0 z-40">
+  <div class="bg-gold text-obsidian overflow-hidden">
+    <div class="marquee-track fast flex whitespace-nowrap py-1.5 text-[10px] font-semibold tracking-[0.22em] uppercase">
+      <span class="mx-6">Every order ships with a Certificate of Authenticity</span><span class="mx-6">✦</span>
+      <span class="mx-6">Complimentary express shipping over $500</span><span class="mx-6">✦</span>
+      <span class="mx-6">New drops land Fridays — 12AM ET</span><span class="mx-6">✦</span>
+      <span class="mx-6">Every order ships with a Certificate of Authenticity</span><span class="mx-6">✦</span>
+      <span class="mx-6">Complimentary express shipping over $500</span><span class="mx-6">✦</span>
+      <span class="mx-6">New drops land Fridays — 12AM ET</span><span class="mx-6">✦</span>
+    </div>
+  </div>
+
+  <div class="bg-obsidian/85 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between gap-4">
+      <!-- Mobile menu button -->
+      <button data-action="toggle-mobile-nav" class="lg:hidden p-2 -ml-2 text-white/80 hover:text-white" aria-label="Open menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>
+      </button>
+
+      <!-- Logo -->
+      <a href="#/" class="font-display font-bold text-lg sm:text-xl tracking-[0.28em] text-white">OBSIDIAN<span class="text-gold">.</span></a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden lg:flex items-center gap-8 text-[13px] font-medium tracking-wide text-white/70">
+        <a href="#/shop" class="hover:text-white transition-colors">New In</a>
+        <a href="#/shop" class="hover:text-white transition-colors">Shop</a>
+        <a href="#brands" class="hover:text-white transition-colors">Brands</a>
+        <a href="#auth" class="hover:text-white transition-colors">Authentication</a>
+        <a href="#sell" class="hover:text-white transition-colors">Sell</a>
+      </nav>
+
+      <!-- Icon cluster -->
+      <div class="flex items-center gap-1 sm:gap-2">
+        <button data-action="search-toggle" class="p-2 text-white/80 hover:text-white transition-colors" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+        <button data-action="view-wishlist" class="relative p-2 text-white/80 hover:text-white transition-colors" aria-label="Wishlist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.5C7 16.5 3.5 13.2 3.5 9.5 3.5 7 5.5 5 8 5c1.7 0 3.1.9 4 2.3C12.9 5.9 14.3 5 16 5c2.5 0 4.5 2 4.5 4.5 0 3.7-3.5 7-8.5 11z"/></svg>
+          <span id="wishCount" class="hidden absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-gold text-obsidian text-[10px] font-bold grid place-items-center tnum">0</span>
+        </button>
+        <button data-action="open-cart" class="relative p-2 text-white/80 hover:text-white transition-colors" aria-label="Open bag">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 8h12l1.2 12.2a1 1 0 0 1-1 1.1H5.8a1 1 0 0 1-1-1.1L6 8z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>
+          <span id="cartCount" class="hidden absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-gold text-obsidian text-[10px] font-bold grid place-items-center tnum">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Slide-down search bar -->
+    <div id="searchBar" class="search-bar hidden border-t border-white/5 bg-coal/95 backdrop-blur-xl">
+      <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-4 flex items-center gap-3">
+        <svg class="text-gold" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <form id="searchForm" class="flex-1 flex items-center">
+          <input id="searchInput" type="search" placeholder="Search Chrome Hearts, Corteiz, Submariner…" class="w-full bg-transparent text-sm placeholder:text-white/30 text-white py-2">
+        </form>
+        <button data-action="search-toggle" class="text-[11px] uppercase tracking-[0.2em] text-white/50 hover:text-white px-2">Close</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     COMPONENT: MOBILE NAVIGATION DRAWER
+============================================================ -->
+<div id="mobileNavOverlay" class="overlay fixed inset-0 z-[55] bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none" data-action="close-mobile-nav"></div>
+<aside id="mobileNav" class="drawer fixed inset-y-0 left-0 z-[56] w-[85%] max-w-xs bg-coal border-r border-white/10 -translate-x-full flex flex-col">
+  <div class="flex items-center justify-between px-5 h-16 border-b border-white/5">
+    <span class="font-display font-bold tracking-[0.28em]">OBSIDIAN<span class="text-gold">.</span></span>
+    <button data-action="close-mobile-nav" class="p-2 -r-2 text-white/70" aria-label="Close menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <nav class="flex-1 px-5 py-6 space-y-1 text-sm">
+    <a href="#/shop" class="block px-3 py-3 rounded-lg text-white/80 hover:bg-white/5 hover:text-white">New In</a>
+    <a href="#/shop" class="block px-3 py-3 rounded-lg text-white/80 hover:bg-white/5 hover:text-white">Shop Drops</a>
+    <a href="#brands" class="block px-3 py-3 rounded-lg text-white/80 hover:bg-white/5 hover:text-white">Brands</a>
+    <a href="#auth" class="block px-3 py-3 rounded-lg text-white/80 hover:bg-white/5 hover:text-white">Authentication</a>
+    <a href="#sell" class="block px-3 py-3 rounded-lg text-white/80 hover:bg-white/5 hover:text-white">Sell With Us</a>
+  </nav>
+  <div class="px-5 py-4 border-t border-white/5 text-[10px] uppercase tracking-[0.25em] text-white/40">
+    Chrome Hearts · Corteiz · Rolex · Trapstar · Louis Vuitton
+  </div>
+</aside>
+
+<!-- ============================================================
+     VIEWS (rendered by JS)
+============================================================ -->
+<main id="app" class="flex-1">
+  <section id="view-home" class="view"></section>
+  <section id="view-shop" class="view hidden"></section>
+  <section id="view-pdp"  class="view hidden"></section>
+</main>
+
+<!-- ============================================================
+     COMPONENT: FOOTER
+============================================================ -->
+<footer class="border-t border-white/5 bg-coal mt-24">
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-14 grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr,1fr,1fr,1fr]">
+    <div>
+      <p class="font-display font-bold text-lg tracking-[0.28em]">OBSIDIAN<span class="text-gold">.</span></p>
+      <p class="mt-4 text-sm text-white/50 leading-relaxed max-w-xs">The private marketplace for authenticated pre-owned luxury. Every piece inspected, certified and NFC-tagged before it reaches you.</p>
+      <form id="newsForm" class="mt-6 flex max-w-xs">
+        <input type="email" required placeholder="Email address" class="flex-1 bg-charcoal border border-white/10 rounded-l-full px-4 py-3 text-sm placeholder:text-white/30 text-white">
+        <button type="submit" class="bg-gold text-obsidian text-xs font-bold uppercase tracking-widest px-5 rounded-r-full hover:bg-gold-light transition-colors">Join</button>
+      </form>
+      <p class="mt-2 text-[11px] text-white/35">Drops, restocks and private sales. No noise.</p>
+    </div>
+    <div>
+      <p class="text-[11px] uppercase tracking-[0.25em] text-white/40 mb-4">Shop</p>
+      <ul class="space-y-2.5 text-sm text-white/60">
+        <li><a href="#/shop" class="hover:text-gold transition-colors">New Arrivals</a></li>
+        <li><a href="#/shop" class="hover:text-gold transition-colors">Active Drops</a></li>
+        <li><a href="#brands" class="hover:text-gold transition-colors">Brands</a></li>
+        <li><a href="#/shop" class="hover:text-gold transition-colors">Under $200</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-[11px] uppercase tracking-[0.25em] text-white/40 mb-4">Support</p>
+      <ul class="space-y-2.5 text-sm text-white/60">
+        <li><a href="#auth" class="hover:text-gold transition-colors">Authentication</a></li>
+        <li><a href="#" class="hover:text-gold transition-colors" onclick="return false">Shipping &amp; Returns</a></li>
+        <li><a href="#" class="hover:text-gold transition-colors" onclick="return false">Condition Guide</a></li>
+        <li><a href="#" class="hover:text-gold transition-colors" onclick="return false">Size Guide</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-[11px] uppercase tracking-[0.25em] text-white/40 mb-4">Company</p>
+      <ul class="space-y-2.5 text-sm text-white/60">
+        <li><a href="#sell" class="hover:text-gold transition-colors">Sell With Us</a></li>
+        <li><a href="#" class="hover:text-gold transition-colors" onclick="return false">About</a></li>
+        <li><a href="#" class="hover:text-gold transition-colors" onclick="return false">Careers</a></li>
+        <li><a href="#" class="hover:text-gold transition-colors" onclick="return false">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/5">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 h-16 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-[11px] text-white/35">© 2025 Obsidian Resale Inc. All rights reserved.</p>
+      <div class="flex items-center gap-2 text-[9px] font-bold tracking-widest text-white/40">
+        <span class="border border-white/10 rounded px-2 py-1">VISA</span>
+        <span class="border border-white/10 rounded px-2 py-1">MASTERCARD</span>
+        <span class="border border-white/10 rounded px-2 py-1">AMEX</span>
+        <span class="border border-white/10 rounded px-2 py-1">AFTERPAY</span>
+        <span class="border border-white/10 rounded px-2 py-1">KLARNA</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     COMPONENT: CART DRAWER + CHECKOUT MODAL + SIZE GUIDE MODAL
+============================================================ -->
+<div id="cartOverlay" class="overlay fixed inset-0 z-[60] bg-black/65 backdrop-blur-sm opacity-0 pointer-events-none" data-action="close-cart"></div>
+<aside id="cartDrawer" class="drawer fixed top-0 right-0 z-[70] h-full w-full max-w-md bg-coal border-l border-white/10 translate-x-full flex flex-col" aria-label="Shopping bag">
+  <div class="flex items-center justify-between px-5 sm:px-6 h-16 border-b border-white/5 shrink-0">
+    <h2 class="font-display font-semibold tracking-wide">Your Bag <span id="cartCountLabel" class="text-white/40 font-normal tnum">(0)</span></h2>
+    <button data-action="close-cart" class="p-2 -r-2 text-white/70 hover:text-white" aria-label="Close bag">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div id="shipBarWrap" class="px-5 sm:px-6 pt-4 shrink-0"></div>
+  <div id="cartItems" class="flex-1 overflow-y-auto drawer-scroll px-5 sm:px-6 py-4 space-y-4"></div>
+  <div id="cartFooter" class="border-t border-white/5 px-5 sm:px-6 py-5 shrink-0"></div>
+</aside>
+
+<!-- Checkout modal -->
+<div id="checkoutOverlay" class="overlay fixed inset-0 z-[80] bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none" data-action="close-checkout"></div>
+<div id="checkoutModal" class="fixed inset-0 z-[81] hidden items-center justify-center p-4">
+  <div id="checkoutPanel" class="w-full max-w-3xl max-h-[90vh] overflow-y-auto drawer-scroll bg-coal border border-white/10 rounded-2xl shadow-lift fade-pop"></div>
+</div>
+
+<!-- Size guide modal -->
+<div id="sizeGuideOverlay" class="overlay fixed inset-0 z-[80] bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none" data-action="close-size-guide"></div>
+<div id="sizeGuideModal" class="fixed inset-0 z-[81] hidden items-center justify-center p-4">
+  <div class="w-full max-w-2xl max-h-[88vh] overflow-y-auto drawer-scroll bg-coal border border-white/10 rounded-2xl shadow-lift fade-pop">
+    <div class="flex items-center justify-between px-6 h-16 border-b border-white/5 sticky top-0 bg-coal z-10">
+      <h3 class="font-display font-semibold">Size Guide — Tops (cm)</h3>
+      <button data-action="close-size-guide" class="p-2 -r-2 text-white/70 hover:text-white" aria-label="Close size guide">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div id="sizeGuideBody" class="p-6"></div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div id="toasts" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[95] flex flex-col items-center gap-2 pointer-events-none w-full max-w-sm px-4"></div>
+
+<script>
+/* ================================================================
+   OBSIDIAN — Authenticated Luxury Resale
+   ----------------------------------------------------------------
+   ARCHITECTURE
+   1.  DATA          products / brands / size chart / condition meta
+   2.  ART           inline-SVG product illustrations (no assets)
+   3.  STATE         cart, wishlist, filters, UI + persistence
+   4.  UTIL          formatting, stock math, dom helpers
+   5.  COMPONENTS    ProductCard, tags, tiles, marquee…
+   6.  VIEWS         HomeView / ShopView / PDPView
+   7.  CART + CHECKOUT
+   8.  ROUTER        hash-based (#/ , #/shop , #/product/:id)
+   9.  EVENTS        global delegated listeners
+  10.  INIT
+================================================================ */
+(function(){
+'use strict';
+
+/* ================================================================
+   1. DATA
+================================================================ */
+const H = 3600e3; // ms per hour — used for drop countdowns
+const now = Date.now();
+
+const PRODUCTS = [
+  { id:1,  brand:'Chrome Hearts', name:'Angel Chain Logo Tee',        type:'Tops',        condition:'Deadstock',  price:148,  was:null, accent:'#C9A961', ticker:'CRH·001', art:'tee',
+    sizes:[{s:'S',left:0},{s:'M',left:1},{s:'L',left:0}] },
+  { id:2,  brand:'Corteiz',       name:'Air Max 1 Zoom 23.5 CMFT',    type:'Footwear',    condition:'Deadstock',  price:240,  was:null, accent:'#7A8BFF', ticker:'CTZ·235', art:'sneaker', endsAt: now + 6.2*H,
+    sizes:[{s:'23.5',left:1}] },
+  { id:3,  brand:'Rolex',         name:'Submariner Date Ref.124060',  type:'Watches',     condition:'Very Good',  price:8450, was:null, accent:'#D9DDE3', ticker:'RLX·4060', art:'watch',
+    sizes:[{s:'41mm',left:1}] },
+  { id:4,  brand:'Trapstar',      name:'"30 FPS" Heavyweight Hoodie', type:'Streetwear',  condition:'Good',       price:310,  was:375,  accent:'#FF5C5C', ticker:'TRP·030', art:'hoodie', endsAt: now + 11.4*H,
+    sizes:[{s:'XS',left:2},{s:'S',left:3},{s:'M',left:1},{s:'L',left:0}] },
+  { id:5,  brand:'Louis Vuitton', name:'Neverfull 135 PM',            type:'Bags',        condition:'Excellent',  price:1150, was:null, accent:'#C9A961', ticker:'LVN·135',  art:'tote', endsAt: now + 8.6*H,
+    sizes:[{s:'One Size',left:1}] },
+  { id:6,  brand:'Corteiz',       name:'Atmos Logo Beanie',           type:'Accessories', condition:'Deadstock',  price:85,   was:105,  accent:'#4CD7B0', ticker:'CTZ·ATH', art:'beanie',
+    sizes:[{s:'One Size',left:3}] },
+  { id:7,  brand:'Chrome Hearts', name:'Shark Teeth Logo Tee',        type:'Tops',        condition:'Very Good',  price:98,   was:128,  accent:'#8A94FF', ticker:'CRH·SHK', art:'tee', endsAt: now + 2.8*H,
+    sizes:[{s:'S',left:0},{s:'M',left:0},{s:'L',left:2}] },
+  { id:8,  brand:'Rolex',         name:'Datejust 36 Blue Oyster',     type:'Watches',     condition:'Excellent',  price:6900, was:null, accent:'#D9DDE3', ticker:'RLX·36OY', art:'watch',
+    sizes:[{s:'36mm',left:1}] },
+  { id:9,  brand:'Louis Vuitton', name:'Speedy Pousse-Sans',          type:'Bags',        condition:'Very Good',  price:980,  was:null, accent:'#C9A961', ticker:'LVN·SPD',  art:'tote', endsAt: now + 9.3*H,
+    sizes:[{s:'One Size',left:2}] },
+  { id:10, brand:'Trapstar',      name:'"21" Utility Parka',          type:'Streetwear',  condition:'Good',       price:485,  was:null, accent:'#FF8A5C', ticker:'TRP·021', art:'parka',
+    sizes:[{s:'M',left:1}] },
+  { id:11, brand:'Corteiz x Supreme', name:'"Bloodline" Zip Hoodie', type:'Streetwear',  condition:'Excellent',  price:540,  was:null, accent:'#C9A961', ticker:'CRT·BLN', art:'hoodie',
+    sizes:[{s:'L',left:1}] },
+  { id:12, brand:'Chrome Hearts', name:'"Lights Out" Hood Cap',       type:'Accessories', condition:'Very Good',  price:75,   was:null, accent:'#B78CFF', ticker:'CRH·CAP', art:'cap',
+    sizes:[{s:'One Size',left:2}] }
+];
+// Corteiz x Supreme is its own brand entry in the filter (special collab)
+PRODUCTS[10].brand = 'Corteiz';
+
+const BRANDS = [
+  { name:'Chrome Hearts', count:24, note:'Street icons, elevated' },
+  { name:'Corteiz',       count:18, note:'Japanese sneaker culture' },
+  { name:'Rolex',         count:9,  note:'Oyster & sports collections' },
+  { name:'Trapstar',      count:12, note:'Heavyweight staples' },
+  { name:'Louis Vuitton', count:15, note:'Neverfull & Speedy' }
+];
+const CONDITIONS = ['Deadstock','Excellent','Very Good','Good'];
+const TYPES = ['Tops','Footwear','Watches','Streetwear','Bags','Accessories'];
+const ALL_SIZES = ['XS','S','M','L','XL','One Size','23.5','36mm','41mm'];
+const PRICE_RANGES = {
+  under100:{ label:'Under $100',     min:0,    max:100 },
+  r100_500:{ label:'$100 – $500',    min:100,  max:500 },
+  r500_1k: { label:'$500 – $1,000',  min:500,  max:1000 },
+  over1k:  { label:'$1,000 +',       min:1000, max:Infinity }
+};
+const SIZE_CHART = {
+  sizes:['XS','S','M','L','XL'],
+  rows:[
+    { label:'Chest (cm)',    v:['96–100','100–104','104–110','110–116','116–122'] },
+    { label:'Length (cm)',   v:['66','68','70','72','74'] },
+    { label:'Shoulder (cm)', v:['44','45.5','47','48.5','50'] },
+    { label:'Sleeve (cm)',   v:['60','61','62','63.5','65'] }
+  ]
+};
+const COND_COPY = {
+  'Deadstock':'Unworn, unlaced and cult-favorite since the release. Original tags, hardware and packaging intact.',
+  'Excellent':'Worn minimally with no visible wear. All details, stitching, hardware and labels factory-perfect.',
+  'Very Good':'Light wear consistent with regular use. No structural or hardware issues. Fully cleaned and inspected.',
+  'Good':'Visible wear from honest use, but fully functional with no damage. Retains all authenticity markers.'
+};
+const COND_RANK = { 'Deadstock':5, 'Excellent':4, 'Very Good':3, 'Good':2 };
+const TYPE_DESC = {
+  'Tops':'Cut from heavyweight 240gsm brushed cotton with a boxy, oversized fit. Dropped shoulders, ribbed hem, true to spec.',
+  'Footwear':'Deadstock silhouette with factory-condition midsole unit. Original box, paper and spare laces included.',
+  'Watches':'Serviced and pressure-tested by a certified master watchmaker. Full papers, box, warranty cards and the original module.',
+  'Streetwear':'Heavyweight fleece-lined garment with tonal stitching. True-to-size fit with a close, clean finish.',
+  'Bags':'Full-grain protective coated canvas with never-used zips and interior. Light corner patina consistent with age.',
+  'Accessories':'Soft-touch premium materials with crisp embroidery and full hardware. Final shape, no snags or loose threads.'
+};
+const HERO_DROP_END = now + 11.4*H; // matches Trapstar drop
+
+/* ================================================================
+   2. ART — inline SVG product illustrations (stroke line-art)
+================================================================ */
+const ART = {
+  tee: `<path d="M76 46 50 55 36 84 56 92 62 77 62 152 138 152 138 77 144 92 164 84 150 55 124 46 C118 55 82 55 76 46 Z"/><path d="M62 120h76" opacity=".35"/>`,
+  hoodie: `<path d="M78 62 C78 40 122 40 122 62"/><path d="M85 62 C85 49 115 49 115 62"/><path d="M64 68 C56 71 52 79 52 90 L52 156 148 156 148 90 C148 79 144 71 136 68 C127 76 73 76 64 68 Z"/><path d="M52 90 38 130 53 136 58 98"/><path d="M148 90 162 130 147 136 142 98"/><path d="M80 122 120 122 116 146 84 146 Z"/><path d="M90 78 90 90 M110 78 110 90"/>`,
+  sneaker: `<path d="M30 138 30 126 C34 122 44 120 56 114 L84 92 C90 87 98 88 103 93 L112 103 C124 111 150 116 160 121 C166 124 170 128 170 133 L170 138 Z"/><path d="M30 134 170 134"/><path d="M84 100 92 96 M90 106 98 102 M96 112 104 108"/><path d="M30 138 170 138 168 146 32 146 Z" opacity=".6"/>`,
+  watch: `<circle cx="100" cy="100" r="38" stroke-dasharray="3 5" opacity=".5"/><circle cx="100" cy="100" r="31"/><path d="M88 73 86 42 Q86 37 91 37 L109 37 Q114 37 114 42 L112 73"/><path d="M88 127 86 158 Q86 163 91 163 L109 163 Q114 163 114 158 L112 127"/><path d="M131 95 139 95 139 105 131 105"/><path d="M100 100 100 81 M100 100 113 107"/><path d="M100 72v6 M100 122v6 M72 100h6 M122 100h6" opacity=".6"/>`,
+  tote: `<path d="M68 80 132 80 140 158 60 158 Z"/><path d="M80 80 C80 58 98 58 98 80"/><path d="M102 80 C102 58 120 58 120 80"/><circle cx="100" cy="118" r="10" opacity=".6"/>`,
+  beanie: `<path d="M58 118 C58 82 78 64 100 64 C122 64 142 82 142 118"/><rect x="52" y="116" width="96" height="20" rx="6"/><circle cx="100" cy="56" r="8"/><path d="M75 122v8 M100 122v8 M125 122v8" opacity=".5"/>`,
+  cap: `<path d="M58 106 C58 76 78 60 100 60 C122 60 142 76 142 106 L58 106 Z"/><path d="M58 106 C92 116 140 114 168 104 C170 111 160 118 142 120 L58 114 Z"/><circle cx="100" cy="58" r="3"/>`,
+  parka: `<circle cx="100" cy="56" r="22"/><circle cx="100" cy="56" r="14" opacity=".5"/><path d="M62 84 C56 87 52 94 52 104 L52 158 148 158 148 104 C148 94 144 87 138 84 C126 94 74 94 62 84 Z"/><path d="M52 104 38 142 53 147 58 108"/><path d="M148 104 162 142 147 147 142 108"/><path d="M100 96 100 158" stroke-dasharray="3 4"/><path d="M64 118 82 125 M136 118 118 125"/>`
+};
+const artSvg = (key, cls) =>
+  `<svg class="${cls||''}" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${ART[key]||ART.tee}</svg>`;
+
+/* Product art tile (dark gradient + watermark ticker + line art) */
+function artTile(p, opts){
+  const o = opts || {};
+  const zoom = o.zoom ? 'transform:scale(1.22)' : 'transform:scale(1)';
+  return `
+  <div class="absolute inset-0" style="background:
+      radial-gradient(120% 90% at 30% 12%, ${p.accent}26 0%, transparent 55%),
+      linear-gradient(165deg,#171717 0%,#0d0d0d 70%)"></div>
+  <span class="absolute font-display font-bold tracking-[0.18em] text-white/[0.05] select-none pointer-events-none"
+        style="font-size:${o.big?'5.5rem':'3.4rem'}; bottom:6%; right:-2%;">${p.ticker}</span>
+  <div class="absolute inset-0 grid place-items-center text-white/85 transition-transform duration-700"
+       style="${zoom}">${artSvg(p.art, o.big ? 'w-3/5 h-3/5' : 'w-4/5 h-4/5')}</div>`;
+}
+
+/* ================================================================
+   3. STATE (+ localStorage persistence)
+================================================================ */
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch(e){ return d; } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+
+const state = {
+  cart:     load('obsidian_cart', []),           // [{id,size,qty}]
+  wishlist: new Set(load('obsidian_wish', [])),
+  filters:  { brands:new Set(), types:new Set(), conds:new Set(), sizes:new Set(), price:'all', wish:false, query:'', sort:'featured' },
+  pdp:      { id:null, size:null, qty:1, gallery:0 },
+  view:     { name:'home', id:null }
+};
+const persistCart = () => save('obsidian_cart', state.cart);
+const persistWish = () => save('obsidian_wish', [...state.wishlist]);
+
+/* ================================================================
+   4. UTILITIES
+================================================================ */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const money = n => '$' + Number(n).toLocaleString('en-US',{ maximumFractionDigits: n % 1 ? 2 : 0 });
+const getP = id => PRODUCTS.find(p => p.id === +id);
+const pad = n => String(n).padStart(2,'0');
+const sizeLeft = (p, size) => { const s = p.sizes.find(x=>x.s===size); return s ? s.left : 0; };
+const totalLeft = p => p.sizes.reduce((a,s)=>a+s.left,0);
+const firstAvail = p => { const a = p.sizes.find(s=>s.left>0); return a ? a.s : null; };
+const fmtCountdown = ms => {
+  if (ms <= 0) return 'Ended';
+  const s = Math.floor(ms/1000), d = Math.floor(s/86400), h = Math.floor(s%86400/3600), m = Math.floor(s%3600/60), sec = s%60;
+  return d > 0 ? `${d}d ${pad(h)}h ${pad(m)}m` : `${pad(h)}:${pad(m)}:${pad(sec)}`;
+};
+
+/* ================================================================
+   5. COMPONENTS
+================================================================ */
+/* --- Scarcity tag: countdown (gold, pulsing) OR low stock --- */
+function scarcityTag(p){
+  if (p.endsAt) return `<span class="inline-flex items-center gap-1.5 bg-gold text-obsidian text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+      <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-obsidian"></span>
+      Ends ${fmtCountdown(p.endsAt - Date.now())}</span>`.replace(fmtCountdown(p.endsAt - Date.now()), '')
+      .replace('Ends ', `<span class="tnum" data-countdown="${p.endsAt}">--:--:--</span>`);
+  const left = totalLeft(p);
+  if (left === 1) return `<span class="inline-flex items-center bg-gold text-obsidian text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">Only 1 left</span>`;
+  if (left > 1 && left <= 3) return `<span class="inline-flex items-center bg-white/10 backdrop-blur text-white text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border border-white/15">Only ${left} left</span>`;
+  return '';
+}
+
+/* --- Condition chip --- */
+function condChip(cond){
+  const style = cond==='Deadstock' ? 'border-gold/60 text-gold bg-gold/10'
+              : cond==='Excellent' ? 'border-white/40 text-white bg-white/10'
+              : 'border-white/15 text-white/70 bg-black/40';
+  return `<span class="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${style} backdrop-blur">${cond}</span>`;
+}
+
+/* --- Heart (wishlist) button --- */
+function wishBtn(p){
+  const on = state.wishlist.has(p.id) ? 'wished' : '';
+  return `<button data-action="toggle-wishlist" data-pid="${p.id}" aria-label="Toggle wishlist"
+      class="${on} w-8 h-8 grid place-items-center rounded-full bg-black/50 backdrop-blur border border-white/10 text-white hover:border-gold/60 transition-colors">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.5C7 16.5 3.5 13.2 3.5 9.5 3.5 7 5.5 5 8 5c1.7 0 3.1.9 4 2.3C12.9 5.9 14.3 5 16 5c2.5 0 4.5 2 4.5 4.5 0 3.7-3.5 7-8.5 11z"/></svg>
+  </button>`;
+}
+
+/* --- Product card (drops grid / shop grid / grails row) --- */
+function ProductCard(p){
+  const left = totalLeft(p);
+  const quickSizes = p.sizes.filter(s=>s.left>0).slice(0,3);
+  return `
+  <article data-pid="${p.id}" class="group cursor-pointer">
+    <div class="relative aspect-[4/5] rounded-2xl overflow-hidden border border-white/[0.06] hover:border-white/20 transition-colors duration-300">
+      <div class="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]">${artTile(p,{})}</div>
+      <div class="absolute top-3 left-3 flex flex-col items-start gap-1.5">${scarcityTag(p)}</div>
+      <div class="absolute top-3 right-3 flex flex-col items-end gap-1.5">${wishBtn(p)}${condChip(p.condition)}</div>
+      ${left>0 ? `
+      <div class="absolute inset-x-3 bottom-3 hidden md:flex gap-1.5 translate-y-[130%] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+        ${quickSizes.map(s=>`<button data-action="quick-add" data-pid="${p.id}" data-size="${s.s}"
+            class="flex-1 bg-white text-obsidian text-xs font-semibold py-2.5 rounded-lg hover:bg-gold transition-colors">${s.s}</button>`).join('')}
+      </div>` : ''}
+    </div>
+    <div class="pt-3 flex items-start justify-between gap-3">
+      <div class="min-w-0">
+        <p class="text-[10px] uppercase tracking-[0.2em] text-white/45">${p.brand}</p>
+        <h3 class="text-[13px] font-medium text-white truncate mt-0.5">${p.name}</h3>
+        <p class="text-[11px] text-white/40 mt-0.5">${p.sizes.map(s=>s.s).join(' / ')} · ${left>0 ? (left<=3 ? left+' left' : p.condition) : 'Sold out'}</p>
+      </div>
+      <div class="text-right shrink-0">
+        <p class="font-display font-semibold text-sm ${p.was?'text-gold':''}">${money(p.price)}</p>
+        ${p.was?`<p class="text-[11px] text-white/35 line-through">${money(p.was)}</p>`:''}
+      </div>
+    </div>
+  </article>`;
+}
+
+/* --- Brand carousel card --- */
+function BrandCard(b){
+  return `
+  <button data-action="filter-brand" data-brand="${b.name}"
+      class="group snap-start shrink-0 w-[270px] sm:w-[320px] h-44 rounded-2xl border border-white/[0.06] hover:border-gold/50 bg-gradient-to-br from-coal to-obsidian p-6 flex flex-col justify-between text-left transition-colors duration-300">
+    <span class="text-[10px] uppercase tracking-[0.25em] text-white/40">${b.count} authenticated pieces</span>
+    <span class="flex items-end justify-between">
+      <span class="font-display font-bold text-2xl tracking-tight group-hover:text-gold transition-colors">${b.name}</span>
+      <span class="w-9 h-9 rounded-full border border-white/15 grid place-items-center group-hover:bg-gold group-hover:border-gold group-hover:text-obsidian transition-all">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </span>
+    <span class="text-xs text-white/35">${b.note}</span>
+  </button>`;
+}
+
+/* ================================================================
+   6. VIEWS
+================================================================ */
+/* ------------------------- HOME VIEW ------------------------- */
+function HomeView(){
+  const drops = [...PRODUCTS].sort((a,b)=>((a.endsAt||9e15)-(b.endsAt||9e15)) || (totalLeft(a)-totalLeft(b))).slice(0,8);
+  const grails = PRODUCTS.filter(p=>p.price<200);
+  return `
+  <!-- HERO -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 hero-grid"></div>
+    <div class="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full pointer-events-none" style="background:radial-gradient(closest-side, rgba(201,169,97,.14), transparent)"></div>
+    <div class="absolute inset-x-0 bottom-0 pointer-events-none select-none overflow-hidden">
+      <div class="font-display font-bold outline-text text-[17vw] leading-[0.8] text-center translate-y-[18%]">AUTHENTICATED</div>
+    </div>
+
+    <div class="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 pt-14 sm:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-[1.15fr,.85fr] gap-10 items-center">
+      <div>
+        <div class="inline-flex items-center gap-2 border border-gold/40 bg-gold/[0.07] rounded-full pl-2 pr-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] uppercase text-gold">
+          <span class="w-6 h-6 rounded-full bg-gold text-obsidian grid place-items-center">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+          </span>
+          Drop 04 — Live Now
+        </div>
+        <h1 class="mt-6 font-display font-bold leading-[0.95] tracking-tight text-[13.5vw] sm:text-7xl lg:text-[5.2rem]">
+          Signed.<br>Styled.<br><span class="text-gold">Certified.</span>
+        </h1>
+        <p class="mt-6 max-w-md text-sm sm:text-[15px] leading-relaxed text-white/55">
+          Premium pre-owned luxury — Chrome Hearts, Corteiz, Rolex, Trapstar, Louis Vuitton — authenticated by hand, tagged with NFC and shipped with a Certificate of Authenticity on every order.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a href="#drops" class="btn-gold inline-flex items-center gap-2 bg-gold text-obsidian text-[13px] font-bold uppercase tracking-[0.15em] px-7 py-4 rounded-full hover:bg-gold-light transition-colors">
+            Shop Latest Drops
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="#auth" class="inline-flex items-center gap-2 border border-white/15 text-white/80 text-[13px] font-semibold uppercase tracking-[0.15em] px-7 py-4 rounded-full hover:border-white/40 hover:text-white transition-colors">Our Process</a>
+        </div>
+        <div class="mt-8 flex items-center gap-6 text-[11px] uppercase tracking-[0.18em] text-white/40">
+          <span>48k+ ordersn</span><span class="text-gold">✦</span><span>4.9 / 5 rating</span><span class="text-gold">✦</span><span>250+ brands</span>
+        </div>
+      </div>
+
+      <!-- Hero art collage -->
+      <div class="hidden lg:flex items-center justify-center gap-6 relative">
+        <div class="relative w-72 h-[360px] rounded-2xl overflow-hidden border border-white/10 rotate-[-4deg] translate-y-6 shadow-lift">
+          ${artTile(PRODUCTS[4],{big:true})}
+        </div>
+        <div class="relative w-80 h-[400px] rounded-2xl overflow-hidden border border-gold/30 shadow-gold -rotate-1">
+          ${artTile(PRODUCTS[2],{big:true})}
+        </div>
+        <div class="absolute -bottom-6 left-2 rounded-xl bg-coal border border-white/10 px-5 py-4 fade-pop">
+          <p class="text-[10px] uppercase tracking-[0.2em] text-white/45">Drop 04 ends in</p>
+          <p class="font-display font-bold text-2xl text-gold tnum" data-countdown="${HERO_DROP_END}">--:--:--</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRAND MARQUEE STRIP -->
+  <div class="border-y border-white/5 py-6 overflow-hidden">
+    <div class="marquee-track flex whitespace-nowrap items-center">
+      ${[...Array(2)].map(()=>['Chrome Hearts','Corteiz','Rolex','Trapstar','Louis Vuitton'].map(b=>`
+        <span class="font-display font-bold text-4xl sm:text-5xl outline-text-2 mx-8">${b.toUpperCase()}</span><span class="text-gold text-xl">✦</span>`).join('')).join('')}
+    </div>
+  </div>
+
+  <!-- ACTIVE DROPS / NEW ARRIVALS -->
+  <section id="drops" class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 pt-16 sm:pt-24">
+    <div class="flex items-end justify-between gap-4 mb-8">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.25em] text-gold font-semibold">New Arrivals</p>
+        <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-1">Active Drops</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="hidden sm:flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-white/45">
+          <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-gold"></span>
+          Main drop ends&nbsp;<span class="text-white font-semibold tnum" data-countdown="${HERO_DROP_END}">--:--:--</span>
+        </span>
+        <a href="#/shop" class="text-[12px] uppercase tracking-[0.18em] font-semibold text-white/70 hover:text-gold transition-colors inline-flex items-center gap-1.5">View all
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      ${drops.map(p=>`<div data-reveal>${ProductCard(p)}</div>`).join('')}
+    </div>
+  </section>
+
+  <!-- AUTHENTICATION / TRUST BANNER -->
+  <section id="auth" class="mt-24 border-y border-gold/20 bg-gradient-to-b from-gold/[0.05] to-transparent">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20">
+      <div class="flex items-end justify-between gap-4 mb-10">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-gold font-semibold">Our Authentication Process</p>
+          <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-1">Trusted by people who know the grails.</h2>
+        </div>
+        <a href="#auth" class="hidden sm:inline-flex text-[12px] uppercase tracking-[0.18em] font-semibold text-white/70 hover:text-gold transition-colors">How it works →</a>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/[0.06] rounded-2xl overflow-hidden border border-white/[0.06]">
+        ${[
+          ['01','Intake & Review','Listing is sourced, reviewed and logged by our secure authentication desk before pricing is finalized.'],
+          ['02','Expert Authentication','In-hand inspection by certified experts — stitching, hardware, fonts, UV marks and licensing verified.'],
+          ['03','NFC Tag + Certificate','Every piece receives a unique NFC tag and a signed digital Certificate of Authenticity PDF.'],
+          ['04','Secure Fulfillment','Insured express shipping. Not authentic? Instant refund — no questions, no fees.']
+        ].map(([n,t,d])=>`
+        <div class="bg-obsidian p-7 hover:bg-coal transition-colors">
+          <p class="font-display font-bold text-gold text-sm tracking-[0.2em]">${n}</p>
+          <h3 class="mt-3 font-display font-semibold text-lg">${t}</h3>
+          <p class="mt-2 text-[13px] leading-relaxed text-white/50">${d}</p>
+        </div>`).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- BROWSE BY BRAND CAROUSEL -->
+  <section id="brands" class="mt-20">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div class="flex items-end justify-between mb-8">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-gold font-semibold">Curated</p>
+          <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-1">Browse by Brand</h2>
+        </div>
+        <div class="hidden sm:flex gap-2">
+          <button data-action="brand-scroll" data-dir="-1" class="w-10 h-10 rounded-full border border-white/15 grid place-items-center text-white/70 hover:border-gold hover:text-gold transition-colors" aria-label="Scroll left">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
+          <button data-action="brand-scroll" data-dir="1" class="w-10 h-10 rounded-full border border-white/15 grid place-items-center text-white/70 hover:border-gold hover:text-gold transition-colors" aria-label="Scroll right">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div id="brandRow" class="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory px-4 sm:px-6 lg:px-10 max-w-[1440px] mx-auto pb-2">
+      ${BRANDS.map(BrandCard).join('')}
+    </div>
+  </section>
+
+  <!-- GRAILS UNDER $200 -->
+  <section class="mt-20">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 pb-4 flex items-end justify-between">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.25em] text-gold font-semibold">The Entry Stack</p>
+        <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-1">Grails Under $200</h2>
+      </div>
+      <a href="#/shop" class="text-[12px] uppercase tracking-[0.18em] font-semibold text-white/70 hover:text-gold transition-colors">View all →</a>
+    </div>
+    <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 sm:px-6 lg:px-10 max-w-[1440px] mx-auto">
+      ${grails.map(p=>`<div class="w-[46vw] sm:w-[300px] shrink-0">${ProductCard(p)}</div>`).join('')}
+    </div>
+  </section>
+
+  <!-- STATS / EDITORIAL -->
+  <section class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 mt-24">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/[0.06] rounded-2xl overflow-hidden border border-white/[0.06]">
+      ${[['48k+','Authenticated orders'],['100%','Authenticity guarantee'],['250+','Artists & houses'],['12h','Median dispatch']].map(([n,l])=>`
+      <div class="bg-obsidian p-8 text-center">
+        <p class="font-display font-bold text-4xl sm:text-5xl text-gold">${n}</p>
+        <p class="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/40">${l}</p>
+      </div>`).join('')}
+    </div>
+  </section>
+
+  <!-- SELL CTA -->
+  <section id="sell" class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 mt-24">
+    <div class="relative overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-r from-coal via-charcoal to-coal p-8 sm:p-14 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+      <div class="absolute inset-0 hero-grid opacity-60"></div>
+      <div class="relative">
+        <h2 class="font-display font-bold text-3xl sm:text-5xl tracking-tight max-w-lg">Unlock the margin on <span class="text-gold">your rotation.</span></h2>
+        <p class="mt-4 text-sm text-white/55 max-w-md leading-relaxed">List into 48k+ verified collectors. Get an instant offer, free insured photography, and payout within 48 hours of sale.</p>
+      </div>
+      <button data-action="toast" data-msg="Sell application started — check your inbox." class="relative btn-gold inline-flex items-center gap-2 bg-gold text-obsidian text-[13px] font-bold uppercase tracking-[0.15em] px-8 py-4 rounded-full hover:bg-gold-light transition-colors">Start a Sell Application</button>
+    </div>
+  </section>`;
+}
+
+/* ------------------------- SHOP VIEW ------------------------- */
+function ShopView(){
+  const f = state.filters;
+  const brandRow = (key, items) => items.map(it=>{
+    const active = (key==='brands'?f.brands:key==='types'?f.types:f.conds).has(it);
+    return `<label class="flex items-center gap-3 py-1.5 cursor-pointer group/li">
+      <input type="checkbox" data-fgroup="${key}" value="${it}" ${active?'checked':''}
+        class="w-4 h-4 rounded border-white/20 bg-charcoal accent-[#C9A961] cursor-pointer">
+      <span class="text-[13px] text-white/70 group-hover/li:text-white flex-1">${it}</span>
+      <span class="text-[11px] text-white/30 tnum">${key==='brands'?((BRANDS.find(b=>b.name===it)||{}).count||PRODUCTS.filter(p=>p.brand===it).length):PRODUCTS.filter(p=> key==='types'?p.type===it:p.condition===it).length}</span>
+    </label>`;
+  }).join('');
+
+  return `
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 pt-8 sm:pt-12">
+    <!-- Breadcrumb / title row -->
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.25em] text-white/40">Home / Shop</p>
+        <h1 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-1">All Products</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <button data-action="open-filters" class="lg:hidden inline-flex items-center gap-2 border border-white/15 rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-white/80">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters</button>
+        <select id="sortSel" class="bg-charcoal border border-white/15 rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-white/80">
+          <option value="featured">Featured</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-[260px,1fr] gap-8">
+      <!-- Filter overlay (mobile) -->
+      <div id="filtersOverlay" class="hidden fixed inset-0 z-[45] bg-black/60 backdrop-blur-sm" data-action="close-filters"></div>
+
+      <!-- SIDEBAR FILTERS -->
+      <aside id="filterPanel" class="filter-panel fixed inset-y-0 left-0 z-[46] w-[85%] max-w-xs bg-coal border-r border-white/10 -translate-x-full lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:border lg:border-white/[0.06] lg:rounded-2xl lg:bg-transparent overflow-y-auto drawer-scroll">
+        <div class="flex items-center justify-between px-5 h-16 border-b border-white/5 lg:hidden">
+          <span class="font-display font-semibold">Filters</span>
+          <button data-action="close-filters" class="p-2 -r-2 text-white/70" aria-label="Close filters">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        </div>
+        <div class="p-5 lg:p-6 space-y-7">
+          <!-- Brand -->
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.22em] text-white/40 mb-3 font-semibold">Brand</p>
+            ${brandRow('brands', BRANDS.map(b=>b.name))}
+          </div>
+          <!-- Price -->
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.22em] text-white/40 mb-3 font-semibold">Price</p>
+            <label class="flex items-center gap-3 py-1.5 cursor-pointer"><input type="radio" name="price" data-fgroup="price" value="all" ${f.price==='all'?'checked':''} class="accent-[#C9A961]"><span class="text-[13px] text-white/70">All prices</span></label>
+            ${Object.entries(PRICE_RANGES).map(([k,r])=>`<label class="flex items-center gap-3 py-1.5 cursor-pointer"><input type="radio" name="price" data-fgroup="price" value="${k}" ${f.price===k?'checked':''} class="accent-[#C9A961]"><span class="text-[13px] text-white/70">${r.label}</span></label>`).join('')}
+          </div>
+          <!-- Size -->
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.22em] text-white/40 mb-3 font-semibold">Size</p>
+            <div class="flex flex-wrap gap-2">
+              ${ALL_SIZES.map(s=>`<button data-action="toggle-size" data-fsize="${s}" aria-pressed="${f.sizes.has(s)}"
+                  class="size-btn px-3 py-2 rounded-lg border text-xs font-semibold ${f.sizes.has(s)?'':'border-white/15 text-white/60 hover:border-white/40'}">${s}</button>`).join('')}
+            </div>
+          </div>
+          <!-- Condition -->
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.22em] text-white/40 mb-3 font-semibold">Condition</p>
+            ${brandRow('conds', CONDITIONS)}
+          </div>
+          <!-- Type -->
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.22em] text-white/40 mb-3 font-semibold">Product Type</p>
+            ${brandRow('types', TYPES)}
+          </div>
+          <!-- Wishlist -->
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" data-fgroup="wish" ${f.wish?'checked':''} class="w-4 h-4 rounded border-white/20 bg-charcoal accent-[#C9A961]">
+            <span class="text-[13px] text-white/70">Wishlist only</span>
+          </label>
+          <button data-action="clear-filters" class="w-full text-[11px] uppercase tracking-[0.22em] font-semibold text-white/50 hover:text-gold border border-white/10 rounded-full py-3 transition-colors">Clear all filters</button>
+          <button data-action="apply-filters" class="lg:hidden w-full btn-gold bg-gold text-obsidian text-xs font-bold uppercase tracking-[0.2em] rounded-full py-3.5">Show results</button>
+        </div>
+      </aside>
+
+      <!-- Results column -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <p id="resultCount" class="text-[12px] uppercase tracking-[0.18em] text-white/45 tnum"></p>
+          <p class="text-[12px] text-white/45 hidden sm:block">Free express shipping over $500</p>
+        </div>
+        <!-- Active filter chips -->
+        <div id="chipsRow" class="flex flex-wrap gap-2 mb-5"></div>
+        <!-- Search within -->
+        <div class="mb-5 relative">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-white/35" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="shopQuery" type="search" placeholder="Search within this collection…" value="${f.query}"
+            class="w-full bg-coal border border-white/10 rounded-full pl-11 pr-4 py-3 text-sm placeholder:text-white/30 text-white">
+        </div>
+        <div id="shopGrid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* Shop filtering + re-render of grid/chips/count */
+function filteredProducts(){
+  const f = state.filters;
+  let list = PRODUCTS.filter(p =>
+    (!f.brands.size || f.brands.has(p.brand)) &&
+    (!f.types.size  || f.types.has(p.type)) &&
+    (!f.conds.size  || f.conds.has(p.condition)) &&
+    (f.price==='all' || (()=>{ const r=PRICE_RANGES[f.price]; return p.price>=r.min && p.price<r.max; })()) &&
+    (!f.sizes.size || p.sizes.some(s=>f.sizes.has(s.s) && s.left>0)) &&
+    (!f.wish || state.wishlist.has(p.id)) &&
+    (!f.query || (p.brand+' '+p.name).toLowerCase().includes(f.query.toLowerCase()))
+  );
+  switch(f.sort){
+    case 'price-asc':  list=[...list].sort((a,b)=>a.price-b.price); break;
+    case 'price-desc': list=[...list].sort((a,b)=>b.price-a.price); break;
+    case 'newest':     list=[...list].sort((a,b)=>b.id-a.id); break;
+  }
+  return list;
+}
+function updateShopUI(){
+  const grid = $('#shopGrid'); if(!grid) return;
+  const list = filteredProducts();
+  $('#resultCount').textContent = list.length + (list.length===1?' item':' items');
+  grid.innerHTML = list.length
+    ? list.map(p=>ProductCard(p)).join('')
+    : `<div class="col-span-full py-24 text-center border border-dashed border-white/10 rounded-2xl">
+         <p class="font-display text-xl text-white/70">Nothing matches those filters.</p>
+         <p class="text-sm text-white/40 mt-2">Try widening your range or clearing a filter.</p>
+         <button data-action="clear-filters" class="mt-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-gold border border-gold/40 rounded-full px-6 py-3">Clear all filters</button>
+       </div>`;
+  // chips
+  const f = state.filters, chips = [];
+  const chip = (label, attrs) => `<span class="inline-flex items-center gap-2 bg-white/[0.06] border border-white/10 rounded-full pl-3.5 pr-2 py-1.5 text-[11px] font-medium text-white/80">${label}
+      <button data-action="remove-chip" ${attrs} class="w-4.5 h-4.5 w-5 h-5 grid place-items-center rounded-full hover:bg-gold hover:text-obsidian transition-colors" aria-label="Remove filter">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></span>`;
+  f.brands.forEach(v=>chips.push(chip(v,`data-fgroup="brands" data-value="${v}"`)));
+  f.types.forEach(v=>chips.push(chip(v,`data-fgroup="types" data-value="${v}"`)));
+  f.conds.forEach(v=>chips.push(chip(v,`data-fgroup="conds" data-value="${v}"`)));
+  f.sizes.forEach(v=>chips.push(chip('Size '+v,`data-fgroup="sizes" data-value="${v}"`)));
+  if(f.price!=='all') chips.push(chip(PRICE_RANGES[f.price].label,`data-fgroup="price"`));
+  if(f.wish) chips.push(chip('Wishlist',`data-fgroup="wish"`));
+  if(f.query) chips.push(chip('"'+f.query+'"',`data-fgroup="query"`));
+  $('#chipsRow').innerHTML = chips.join('') + (chips.length ?
+    `<button data-action="clear-filters" class="text-[11px] uppercase tracking-widest text-gold/80 hover:text-gold py-1.5 px-2 font-semibold">Clear all</button>` : '');
+}
+
+/* ------------------------- PDP VIEW ------------------------- */
+function PDPView(id){
+  const p = getP(id);
+  if(!p) return `<div class="max-w-[1440px] mx-auto px-6 py-24 text-center text-white/60">Product not found.</div>`;
+  state.pdp = { id:p.id, size: state.pdp.size && sizeLeft(p,state.pdp.size)>0 ? state.pdp.size : firstAvail(p), qty:1, gallery:0 };
+  const left = totalLeft(p);
+  const payLater = (p.price/4).toFixed(2);
+  const rank = COND_RANK[p.condition];
+
+  return `
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 pt-6 sm:pt-10">
+    <!-- Breadcrumb -->
+    <nav class="text-[11px] uppercase tracking-[0.18em] text-white/40 flex items-center gap-2 flex-wrap">
+      <a href="#/" class="hover:text-white transition-colors">Home</a><span>/</span>
+      <a href="#/shop" class="hover:text-white transition-colors">Shop</a><span>/</span>
+      <span class="text-white/70">${p.brand}</span><span>/</span>
+      <span class="text-white truncate max-w-[160px]">${p.name}</span>
+    </nav>
+
+    <div class="mt-6 grid lg:grid-cols-2 gap-8 lg:gap-14">
+      <!-- GALLERY -->
+      <div>
+        <div id="pdpStage" class="relative aspect-square rounded-3xl overflow-hidden border border-white/[0.07]">
+          ${artTile(p,{big:true, zoom:false})}
+          ${scarcityTag(p) ? `<div class="absolute top-4 left-4">${scarcityTag(p)}</div>`:''}
+        </div>
+        <div class="flex gap-3 mt-4">
+          ${[0,1,2].map(i=>`
+          <button data-action="set-gallery" data-idx="${i}" class="pdp-thumb relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden border ${i===0?'border-gold':'border-white/10 hover:border-white/30'} transition-colors">
+            ${artTile(p,{zoom:i===2})}
+          </button>`).join('')}
+        </div>
+      </div>
+
+      <!-- INFO PANEL -->
+      <div class="min-w-0">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-white/45">${p.brand}</p>
+        <h1 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-1.5">${p.name}</h1>
+
+        <div class="mt-4 flex flex-wrap items-center gap-2">
+          ${condChip(p.condition)}
+          ${left===1?`<span class="inline-flex items-center bg-gold/10 border border-gold/50 text-gold text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">Only 1 left in stock</span>`:''}
+          ${p.endsAt?`<span class="inline-flex items-center bg-white/[0.06] border border-white/15 text-white/80 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full tnum" data-countdown-wrap="${p.endsAt}">Ends in <span class="tnum" data-countdown="${p.endsAt}">--:--:--</span></span>`:''}
+        </div>
+
+        <!-- Condition rating meter -->
+        <div class="mt-4 flex items-center gap-3">
+          <span class="text-[11px] uppercase tracking-[0.18em] text-white/40">Condition</span>
+          <div class="flex gap-1">${[1,2,3,4,5].map(i=>`<span class="w-6 h-1 rounded-full ${i<=rank?'bg-gold':'bg-white/10'}"></span>`).join('')}</div>
+          <span class="text-[11px] text-white/60">${rank}.0 / 5.0</span>
+        </div>
+
+        <!-- Price + installments -->
+        <div class="mt-5 flex flex-wrap items-baseline gap-3">
+          <p class="font-display font-bold text-4xl tracking-tight">${money(p.price)}</p>
+          ${p.was?`<p class="text-lg text-white/35 line-through">${money(p.was)}</p><span class="text-[11px] font-bold uppercase tracking-wider text-gold">-${Math.round((1-p.price/p.was)*100)}%</span>`:''}
+        </div>
+        <p class="mt-2 text-[12px] text-white/45 leading-relaxed">
+          or 4 payments of <span class="text-white/80 font-medium">$${payLater}</span> with
+          <span class="font-semibold text-white/70">Afterpay</span> · or
+          <span class="font-semibold text-white/70">Klarna</span> available at checkout. Taxes calculated at checkout.
+        </p>
+
+        <!-- Size selector -->
+        <div class="mt-7">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-[11px] uppercase tracking-[0.2em] font-semibold text-white/60">Select Size — <span id="pdpSizeLabel" class="text-white">${state.pdp.size||'—'}</span></p>
+            <button data-action="open-size-guide" class="text-[11px] uppercase tracking-[0.18em] font-semibold text-gold hover:text-gold-light inline-flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Size guide</button>
+          </div>
+          <div class="flex flex-wrap gap-2" id="pdpSizes">
+            ${p.sizes.map(s=>{
+              const off = s.left<=0;
+              const active = state.pdp.size===s.s;
+              return `<button data-action="size-select" data-size="${s.s}" ${off?'disabled':''} aria-pressed="${active}"
+                class="size-btn relative px-5 py-3 rounded-xl border text-sm font-semibold transition-colors
+                ${off ? 'border-white/[0.06] text-white/25 line-through cursor-not-allowed'
+                      : 'border-white/15 text-white/80 hover:border-white/50'}">${s.s}
+                ${!off&&s.left===1?`<span class="absolute -top-2 -right-2 bg-gold text-obsidian text-[9px] font-bold px-1.5 py-0.5 rounded-full">1</span>`:''}
+              </button>`;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Qty + Add to bag -->
+        <div class="mt-6 flex gap-3">
+          <div class="flex items-center border border-white/15 rounded-full">
+            <button data-action="qty-minus" class="w-11 h-12 text-white/70 hover:text-white text-lg" aria-label="Decrease quantity">−</button>
+            <span id="pdpQty" class="w-8 text-center font-semibold tnum">${state.pdp.qty}</span>
+            <button data-action="qty-plus" class="w-11 h-12 text-white/70 hover:text-white text-lg" aria-label="Increase quantity">+</button>
+          </div>
+          <button id="pdpAdd" data-action="add-to-bag" ${state.pdp.size?'':'disabled'}
+            class="btn-gold flex-1 bg-gold text-obsidian rounded-full text-[13px] font-bold uppercase tracking-[0.18em] hover:bg-gold-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+            ${state.pdp.size ? 'Add to Bag — '+money(p.price*state.pdp.qty) : 'Select a size'}
+          </button>
+          <button data-action="toggle-wishlist" data-pid="${p.id}" class="${state.wishlist.has(p.id)?'wished':''} w-12 h-12 grid place-items-center rounded-full border border-white/15 text-white hover:border-gold/60 transition-colors shrink-0" aria-label="Toggle wishlist">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.5C7 16.5 3.5 13.2 3.5 9.5 3.5 7 5.5 5 8 5c1.7 0 3.1.9 4 2.3C12.9 5.9 14.3 5 16 5c2.5 0 4.5 2 4.5 4.5 0 3.7-3.5 7-8.5 11z"/></svg>
+          </button>
+        </div>
+
+        <!-- Trust badges -->
+        <div class="mt-6 grid grid-cols-3 gap-2">
+          ${[
+            ['<path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3z"/><path d="m9 12 2 2 4-4"/>','Certificate of<br>Authenticity'],
+            ['<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M4 12a8 8 0 0 1 16 0M4 12a8 8 0 0 0 16 0" opacity=".5"/>','NFC-tagged<br>piece'],
+            ['<path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/>','Insured express<br>shipping']
+          ].map(([svg,label])=>`
+          <div class="flex flex-col items-center gap-2 rounded-xl border border-white/[0.07] bg-coal/60 px-2 py-3.5 text-center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A961" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${svg}</svg>
+            <span class="text-[9.5px] uppercase tracking-[0.14em] text-white/50 leading-snug">${label}</span>
+          </div>`).join('')}
+        </div>
+        <p class="mt-3 text-[11px] text-gold/90 flex items-center gap-2">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3z"/><path d="m9 12 2 2 4-4"/></svg>
+          Certificate of Authenticity included — signed PDF + NFC verification on delivery.
+        </p>
+
+        <!-- Accordions -->
+        <div class="mt-8 divide-y divide-white/[0.07] border-y border-white/[0.07]">
+          <details class="acc group">
+            <summary class="flex items-center justify-between py-4 text-sm font-semibold">
+              Description & Details
+              <span class="acc-plus text-white/40 font-normal text-lg leading-none">+</span></summary>
+            <div class="pb-5 text-[13px] text-white/55 leading-relaxed">
+              <p>${TYPE_DESC[p.type]}</p>
+              <div class="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-[12.5px]">
+                <span class="text-white/40">SKU</span><span class="text-white/75">OBS-${String(p.id).padStart(4,'0')}</span>
+                <span class="text-white/40">Brand</span><span class="text-white/75">${p.brand}</span>
+                <span class="text-white/40">Model</span><span class="text-white/75">${p.name}</span>
+                <span class="text-white/40">Condition</span><span class="text-white/75">${p.condition}</span>
+              </div>
+            </div>
+          </details>
+          <details class="acc group">
+            <summary class="flex items-center justify-between py-4 text-sm font-semibold">
+              Condition Report
+              <span class="acc-plus text-white/40 font-normal text-lg leading-none">+</span></summary>
+            <div class="pb-5 text-[13px] text-white/55 leading-relaxed">
+              <p>${COND_COPY[p.condition]}</p>
+              <button data-action="open-size-guide" class="mt-3 text-[11px] uppercase tracking-[0.18em] font-semibold text-gold">View size measurements →</button>
+            </div>
+          </details>
+          <details class="acc group">
+            <summary class="flex items-center justify-between py-4 text-sm font-semibold">
+              Shipping & Returns
+              <span class="acc-plus text-white/40 font-normal text-lg leading-none">+</span></summary>
+            <div class="pb-5 text-[13px] text-white/55 leading-relaxed">
+              Express 1–2 day insured delivery — complimentary on orders over $500, otherwise $12. 14-day returns on unworn items in original condition. Every order is covered by our 100% authenticity guarantee with an instant refund if anything is off.
+            </div>
+          </details>
+          <details class="acc group">
+            <summary class="flex items-center justify-between py-4 text-sm font-semibold">
+              Authentication
+              <span class="acc-plus text-white/40 font-normal text-lg leading-none">+</span></summary>
+            <div class="pb-5 text-[13px] text-white/55 leading-relaxed">
+              This piece passed our 6-point expert inspection (construction, hardware, embroidery, licensing, packaging, UV marks) and is secured with a unique NFC tag linked to its digital certificate.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ================================================================
+   7. CART + CHECKOUT
+================================================================ */
+const cartQty    = () => state.cart.reduce((a,i)=>a+i.qty,0);
+const cartTotal  = () => state.cart.reduce((a,i)=>a+getP(i.id).price*i.qty,0);
+const cartShip   = sub  => sub>=500||sub===0 ? 0 : 12;
+
+function renderCartBadges(){
+  const n = cartQty();
+  const cc = $('#cartCount');
+  cc.textContent = n; cc.classList.toggle('hidden', n===0);
+  const wc = $('#wishCount');
+  wc.textContent = state.wishlist.size; wc.classList.toggle('hidden', state.wishlist.size===0);
+}
+
+function renderCart(){
+  renderCartBadges();
+  const items = $('#cartItems'), foot = $('#cartFooter'), wrap = $('#shipBarWrap');
+  $('#cartCountLabel').textContent = `(${cartQty()})`;
+  if(!state.cart.length){
+    items.innerHTML = `<div class="h-full grid place-items-center text-center py-16">
+        <div><p class="font-display text-xl text-white/80">Your bag is empty.</p>
+        <p class="text-sm text-white/40 mt-2 mb-6">Deadstock won't wait. Neither should you.</p>
+        <a href="#/shop" data-action="close-cart" class="btn-gold inline-block bg-gold text-obsidian text-xs font-bold uppercase tracking-[0.18em] px-7 py-3.5 rounded-full">Shop Drops</a></div></div>`;
+    foot.innerHTML = ''; wrap.innerHTML = '';
+    return;
+  }
+  const sub = cartTotal();
+  const pct = Math.min(sub/500,1)*100;
+  wrap.innerHTML = `
+    <p class="text-[11px] uppercase tracking-[0.16em] text-white/45 mb-2">${sub>=500?`<span class="text-gold font-semibold">Free express shipping unlocked</span>`:`You're <span class="text-white font-semibold">${money(500-sub)}</span> away from free express shipping`}</p>
+    <div class="h-1 rounded-full bg-white/[0.08] overflow-hidden"><div class="h-full bg-gold rounded-full transition-all duration-500" style="width:${pct}%"></div></div>`;
+  items.innerHTML = state.cart.map(i=>{
+    const p = getP(i.id);
+    return `<div class="flex gap-4">
+      <div class="w-20 h-24 rounded-xl overflow-hidden relative border border-white/[0.07] shrink-0">${artTile(p,{})}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-[10px] uppercase tracking-[0.18em] text-white/40">${p.brand}</p>
+            <p class="text-[13px] font-medium truncate">${p.name}</p>
+            <p class="text-[11px] text-white/40 mt-0.5">Size ${i.size} · ${p.condition}</p>
+          </div>
+          <p class="font-display font-semibold text-sm shrink-0">${money(p.price*i.qty)}</p>
+        </div>
+        <div class="mt-3 flex items-center justify-between">
+          <div class="flex items-center border border-white/10 rounded-full">
+            <button data-action="cart-qty" data-id="${p.id}" data-size="${i.size}" data-delta="-1" class="w-8 h-8 text-white/70 hover:text-white" aria-label="Decrease">−</button>
+            <span class="w-6 text-center text-xs font-semibold tnum">${i.qty}</span>
+            <button data-action="cart-qty" data-id="${p.id}" data-size="${i.size}" data-delta="1" class="w-8 h-8 text-white/70 hover:text-white" aria-label="Increase">+</button>
+          </div>
+          <button data-action="remove-item" data-id="${p.id}" data-size="${i.size}" class="text-white/35 hover:text-red-400 transition-colors p-1" aria-label="Remove item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  foot.innerHTML = `
+    <div class="space-y-2 text-[13px]">
+      <div class="flex justify-between text-white/55"><span>Subtotal</span><span class="text-white/90">${money(sub)}</span></div>
+      <div class="flex justify-between text-white/55"><span>Express shipping</span><span class="${cartShip(sub)===0?'text-gold font-semibold':'text-white/90'}">${cartShip(sub)===0?'Free':money(cartShip(sub))}</span></div>
+      <div class="flex justify-between font-display font-bold text-lg pt-2 border-t border-white/[0.07]"><span>Total</span><span>${money(sub+cartShip(sub))}</span></div>
+    </div>
+    <button data-action="checkout" class="btn-gold mt-4 w-full bg-gold text-obsidian text-[13px] font-bold uppercase tracking-[0.18em] py-4 rounded-full hover:bg-gold-light transition-colors">Proceed to Checkout</button>
+    <button data-action="close-cart" class="mt-2 w-full text-[11px] uppercase tracking-[0.2em] text-white/45 hover:text-white py-2 transition-colors">Continue shopping</button>`;
+}
+
+function cartAdd(id, size, qty){
+  const p = getP(id); if(!p) return false;
+  const left = sizeLeft(p,size);
+  if(left<=0) return false;
+  const qtyAdd = Math.min(qty,left);
+  const ex = state.cart.find(i=>i.id===p.id && i.size===size);
+  if(ex) ex.qty = Math.min(ex.qty+qtyAdd, left);
+  else state.cart.push({ id:p.id, size, qty:qtyAdd });
+  // decrement live inventory
+  p.sizes.find(s=>s.s===size).left -= qtyAdd;
+  persistCart(); renderCart();
+  return true;
+}
+function cartRemoveItem(id,size){
+  const p = getP(id);
+  const ix = state.cart.findIndex(i=>i.id===id && i.size===size);
+  if(ix>-1){
+    const it = state.cart[ix];
+    if(p){ const s=p.sizes.find(x=>x.s===size); if(s) s.left += it.qty; } // restore stock
+    state.cart.splice(ix,1);
+  }
+  persistCart(); renderCart();
+}
+function cartSetQty(id,size,delta){
+  const ix = state.cart.findIndex(i=>i.id===id && i.size===size);
+  if(ix<0) return;
+  const it = state.cart[ix], p = getP(id);
+  const max = p ? sizeLeft(p,size)+it.qty : it.qty;
+  it.qty += delta;
+  it.qty = Math.max(1, Math.min(it.qty, max||1));
+  if(it.qty===1 && delta<0){ cartRemoveItem(id,size); return; }
+  // adjust live inventory by delta
+  if(p){ const s=p.sizes.find(x=>x.s===size); if(s) s.left -= delta; }
+  persistCart(); renderCart();
+}
+
+/* --- Cart drawer open/close --- */
+function openCart(){
+  renderCart();
+  $('#cartOverlay').classList.remove('pointer-events-none');
+  $('#cartOverlay').classList.add('opacity-100');
+  $('#cartDrawer').classList.remove('translate-x-full');
+  document.body.style.overflow = 'hidden';
+}
+function closeCart(){
+  $('#cartOverlay').classList.add('pointer-events-none');
+  $('#cartOverlay').classList.remove('opacity-100');
+  $('#cartDrawer').classList.add('translate-x-full');
+  document.body.style.overflow = '';
+}
+
+/* --- Checkout modal --- */
+let checkoutStep = 'form'; // form | processing | success
+function renderCheckout(step){
+  checkoutStep = step;
+  const panel = $('#checkoutPanel');
+  const sub = cartTotal(), ship = cartShip(sub);
+  if(step==='success'){
+    panel.innerHTML = `
+      <div class="p-10 text-center">
+        <svg class="mx-auto" width="88" height="88" viewBox="0 0 56 56" fill="none">
+          <circle class="check-circle" cx="28" cy="28" r="26" stroke="#C9A961" stroke-width="1.6"/>
+          <path class="check-mark" d="M17 29l7 7 15-15" stroke="#C9A961" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="font-display font-bold text-3xl mt-6">Order confirmed.</h3>
+        <p class="text-sm text-white/50 mt-2">Order <span class="text-gold font-semibold">#OBS-${String(Math.floor(100000+Math.random()*900000))}</span></p>
+        <p class="text-[13px] text-white/50 mt-4 max-w-xs mx-auto leading-relaxed">A Certificate of Authenticity and tracking details are on their way to your inbox. Your NFC tag is being activated.</p>
+        <button data-action="close-checkout" class="btn-gold mt-8 bg-gold text-obsidian text-[13px] font-bold uppercase tracking-[0.18em] px-8 py-4 rounded-full hover:bg-gold-light transition-colors">Continue Shopping</button>
+      </div>`;
+    return;
+  }
+  panel.innerHTML = `
+    <div class="flex items-center justify-between px-6 sm:px-8 h-16 border-b border-white/[0.07] sticky top-0 bg-coal z-10">
+      <h3 class="font-display font-semibold text-lg">Checkout</h3>
+      <button data-action="close-checkout" class="p-2 -r-2 text-white/70 hover:text-white" aria-label="Close checkout">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="grid md:grid-cols-[1fr,1.2fr] gap-0">
+      <!-- Summary -->
+      <div class="p-6 sm:p-8 border-b md:border-b-0 md:border-r border-white/[0.07]">
+        <p class="text-[11px] uppercase tracking-[0.22em] text-white/40 mb-5">Order summary</p>
+        <div class="space-y-4 max-h-56 overflow-y-auto drawer-scroll pr-1">
+          ${state.cart.map(i=>{const p=getP(i.id);return `
+            <div class="flex gap-3 items-center">
+              <div class="w-14 h-16 rounded-lg overflow-hidden relative border border-white/[0.07] shrink-0">${artTile(p,{})}</div>
+              <div class="flex-1 min-w-0"><p class="text-[12.5px] font-medium truncate">${p.name}</p>
+              <p class="text-[11px] text-white/40">${i.size} × ${i.qty}</p></div>
+              <p class="text-[12.5px] font-semibold">${money(p.price*i.qty)}</p>
+            </div>`;}).join('')}
+        </div>
+        <div class="mt-6 space-y-2 text-[13px]">
+          <div class="flex justify-between text-white/55"><span>Subtotal</span><span class="text-white/90">${money(sub)}</span></div>
+          <div class="flex justify-between text-white/55"><span>Shipping</span><span class="${ship===0?'text-gold font-semibold':'text-white/90'}">${ship===0?'Free':money(ship)}</span></div>
+          <div class="flex justify-between font-display font-bold text-lg pt-2 border-t border-white/[0.07]"><span>Total</span><span>${money(sub+ship)}</span></div>
+        </div>
+        <p class="mt-4 text-[11px] text-gold/90 flex items-center gap-2">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3z"/><path d="m9 12 2 2 4-4"/></svg>
+          Certificate of Authenticity included</p>
+      </div>
+      <!-- Form -->
+      <form id="checkoutForm" class="p-6 sm:p-8 space-y-4">
+        <p class="text-[11px] uppercase tracking-[0.22em] text-white/40">Contact</p>
+        <input required type="email" placeholder="Email address" class="w-full bg-charcoal border border-white/10 rounded-xl px-4 py-3 text-sm placeholder:text-white/30 text-white">
+        <p class="text-[11px] uppercase tracking-[0.22em] text-white/40 pt-2">Shipping</p>
+        <input required type="text" placeholder="Full name" class="w-full bg-charcoal border border-white/10 rounded-xl px-4 py-3 text-sm placeholder:text-white/30 text-white">
+        <input required type="text" placeholder="Address + city, ZIP" class="w-full bg-charcoal border border-white/10 rounded-xl px-4 py-3 text-sm placeholder:text-white/30 text-white">
+        <p class="text-[11px] uppercase tracking-[0.22em] text-white/40 pt-2">Payment</p>
+        <input required type="text" placeholder="Card number" inputmode="numeric" class="w-full bg-charcoal border border-white/10 rounded-xl px-4 py-3 text-sm placeholder:text-white/30 text-white">
+        <div class="grid grid-cols-2 gap-4">
+          <input required type="text" placeholder="MM / YY" class="w-full bg-charcoal border border-white/10 rounded-xl px-4 py-3 text-sm placeholder:text-white/30 text-white">
+          <input required type="text" placeholder="CVC" class="w-full bg-charcoal border border-white/10 rounded-xl px-4 py-3 text-sm placeholder:text-white/30 text-white">
+        </div>
+        <p class="text-[11px] text-white/40">or pay in 4 with <span class="text-white/70 font-semibold">Afterpay</span> · <span class="text-white/70 font-semibold">Klarna</span></p>
+        <button type="button" data-action="pay" class="btn-gold w-full bg-gold text-obsidian text-[13px] font-bold uppercase tracking-[0.18em] py-4 rounded-full hover:bg-gold-light transition-colors disabled:opacity-60">
+          ${checkoutStep==='processing'?'Processing…':'Pay '+money(sub+ship)}</button>
+      </form>
+    </div>`;
+}
+function openCheckout(){
+  checkoutStep='form';
+  renderCheckout('form');
+  $('#checkoutOverlay').classList.remove('pointer-events-none');
+  $('#checkoutOverlay').classList.add('opacity-100');
+  const m = $('#checkoutModal'); m.classList.remove('hidden'); m.classList.add('flex');
+  document.body.style.overflow='hidden';
+}
+function closeCheckout(){
+  $('#checkoutOverlay').classList.add('pointer-events-none');
+  $('#checkoutOverlay').classList.remove('opacity-100');
+  const m = $('#checkoutModal'); m.classList.add('hidden'); m.classList.remove('flex');
+  document.body.style.overflow='';
+}
+
+/* --- Size guide --- */
+function openSizeGuide(){
+  $('#sizeGuideBody').innerHTML = `
+    <p class="text-[12.5px] text-white/50 mb-5">Garment measured in centimetres, laid flat. For a tailored fit, size down.</p>
+    <div class="overflow-x-auto no-scrollbar">
+      <table class="w-full text-[12.5px]">
+        <thead><tr class="border-b border-white/10">
+          <th class="text-left py-3 pr-4 text-white/40 font-medium uppercase tracking-wider text-[10px]">Measurement</th>
+          ${SIZE_CHART.sizes.map(s=>`<th class="py-3 px-3 text-center font-display font-semibold text-gold">${s}</th>`).join('')}
+        </tr></thead>
+        <tbody>
+          ${SIZE_CHART.rows.map(r=>`<tr class="border-b border-white/[0.05]">
+            <td class="py-3 pr-4 text-white/55">${r.label}</td>
+            ${r.v.map(v=>`<td class="py-3 px-3 text-center text-white/80 tnum">${v}</td>`).join('')}
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  $('#sizeGuideOverlay').classList.remove('pointer-events-none');
+  $('#sizeGuideOverlay').classList.add('opacity-100');
+  const m = $('#sizeGuideModal'); m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeSizeGuide(){
+  $('#sizeGuideOverlay').classList.add('pointer-events-none');
+  $('#sizeGuideOverlay').classList.remove('opacity-100');
+  const m = $('#sizeGuideModal'); m.classList.add('hidden'); m.classList.remove('flex');
+}
+
+/* --- Toast --- */
+function toast(msg){
+  const el = document.createElement('div');
+  el.className = 'toast pointer-events-auto flex items-center gap-2.5 bg-coal border border-gold/40 rounded-full pl-4 pr-5 py-3 shadow-lift';
+  el.innerHTML = `<span class="w-5 h-5 rounded-full bg-gold text-obsidian grid place-items-center shrink-0">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg></span>
+    <span class="text-[13px] font-medium text-white whitespace-nowrap">${msg}</span>`;
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{ el.classList.add('leaving'); setTimeout(()=>el.remove(), 320); }, 2600);
+}
+
+/* ================================================================
+   8. ROUTER
+================================================================ */
+function go(path){
+  if(location.hash === path) handleRoute();
+  else location.hash = path;
+}
+function renderView(name, id){
+  state.view = { name, id: id||null };
+  ['home','shop','pdp'].forEach(v => $('#view-'+v).classList.toggle('hidden', v!==name));
+  if(name==='home'){ $('#view-home').innerHTML = HomeView(); observeReveals(); }
+  if(name==='shop'){ $('#view-shop').innerHTML = ShopView(); updateShopUI(); }
+  if(name==='pdp'){ $('#view-pdp').innerHTML = PDPView(id); }
+}
+function handleRoute(){
+  const h = location.hash || '';
+  closeCart();
+  let name='home', id=null, anchor=null;
+  if(h.startsWith('#/product/')){ name='pdp'; id=+h.split('/')[2]; }
+  else if(h.startsWith('#/shop')){ name='shop'; }
+  else if(h.length>1){ anchor = h.slice(1); name='home'; }
+  renderView(name,id);
+  if(anchor){
+    requestAnimationFrame(()=>{ const t=document.getElementById(anchor); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); });
+  } else {
+    window.scrollTo({ top:0, behavior:'instant' in window ? 'instant' : 'auto' });
+  }
+}
+window.addEventListener('hashchange', handleRoute);
+
+/* Reveal on scroll */
+let revealObs = null;
+function observeReveals(){
+  if(!('IntersectionObserver' in window)) { $$('[data-reveal]').forEach(el=>el.classList.add('in')); return; }
+  if(revealObs) revealObs.disconnect();
+  revealObs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); revealObs.unobserve(e.target); } });
+  }, { threshold:.12 });
+  $$('[data-reveal]').forEach(el=>revealObs.observe(el));
+}
+
+/* Countdown ticker — one global interval */
+setInterval(()=>{
+  $$('[data-countdown]').forEach(el=>{
+    el.textContent = fmtCountdown((+el.dataset.countdown) - Date.now());
+  });
+}, 1000);
+
+/* ================================================================
+   9. EVENTS (delegated)
+================================================================ */
+document.addEventListener('click', e=>{
+  const act = e.target.closest('[data-action]');
+  if(act){
+    const a = act.dataset.action;
+    const pid = act.dataset.pid ? +act.dataset.pid : null;
+
+    switch(a){
+      /* --- cart --- */
+      case 'open-cart': openCart(); return;
+      case 'close-cart': closeCart(); return;
+      case 'cart-qty': cartSetQty(+act.dataset.id, act.dataset.size, +act.dataset.delta); refreshViewSoft(); return;
+      case 'remove-item': cartRemoveItem(+act.dataset.id, act.dataset.size); refreshViewSoft(); toast('Item removed'); return;
+      case 'checkout': closeCart(); setTimeout(openCheckout, 120); return;
+      case 'close-checkout': closeCheckout(); return;
+      case 'pay': {
+        const form = $('#checkoutForm');
+        if(form && !form.checkValidity()){ form.reportValidity(); return; }
+        renderCheckout('processing');
+        setTimeout(()=>{
+          state.cart = []; persistCart(); renderCart();
+          renderCheckout('success');
+        }, 1400);
+        return;
+      }
+
+      /* --- wishlist --- */
+      case 'toggle-wishlist': {
+        if(state.wishlist.has(pid)){ state.wishlist.delete(pid); toast('Removed from wishlist'); }
+        else { state.wishlist.add(pid); toast('Saved to wishlist'); }
+        persistWish(); renderCartBadges(); refreshViewSoft();
+        return;
+      }
+      case 'view-wishlist': {
+        state.filters.wish = true;
+        go('#/shop');
+        return;
+      }
+
+      /* --- product actions --- */
+      case 'quick-add': {
+        const size = act.dataset.size;
+        if(cartAdd(pid, size, 1)){ openCart(); refreshViewSoft(); }
+        return;
+      }
+      case 'size-select': {
+        if(act.disabled) return;
+        state.pdp.size = act.dataset.size;
+        const p = getP(state.pdp.id);
+        $$('#pdpSizes .size-btn').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.size===state.pdp.size)));
+        $('#pdpSizeLabel').textContent = state.pdp.size;
+        const btn = $('#pdpAdd');
+        btn.disabled = false;
+        btn.innerHTML = 'Add to Bag — ' + money(p.price * state.pdp.qty);
+        return;
+      }
+      case 'qty-minus': {
+        const p = getP(state.pdp.id);
+        state.pdp.qty = Math.max(1, state.pdp.qty-1);
+        $('#pdpQty').textContent = state.pdp.qty;
+        if(state.pdp.size) $('#pdpAdd').innerHTML = 'Add to Bag — ' + money(p.price * state.pdp.qty);
+        return;
+      }
+      case 'qty-plus': {
+        const p = getP(state.pdp.id);
+        const max = state.pdp.size ? Math.min(sizeLeft(p,state.pdp.size), 9) : 9;
+        state.pdp.qty = Math.min(max, state.pdp.qty+1);
+        $('#pdpQty').textContent = state.pdp.qty;
+        if(state.pdp.size) $('#pdpAdd').innerHTML = 'Add to Bag — ' + money(p.price * state.pdp.qty);
+        return;
+      }
+      case 'add-to-bag': {
+        if(!state.pdp.size) return;
+        if(cartAdd(state.pdp.id, state.pdp.size, state.pdp.qty)){
+          openCart(); refreshViewSoft(true);
+        } else toast('That size just sold out');
+        return;
+      }
+      case 'set-gallery': {
+        const idx = +act.dataset.idx;
+        state.pdp.gallery = idx;
+        const p = getP(state.pdp.id);
+        $('#pdpStage').innerHTML = artTile(p,{big:true, zoom: idx===2}) ;
+        $$('.pdp-thumb').forEach((t,i)=>{ t.classList.toggle('border-gold', i===idx); t.classList.toggle('border-white/10', i!==idx); });
+        return;
+      }
+
+      /* --- filters --- */
+      case 'filter-brand': {
+        const f = state.filters;
+        f.brands.clear(); f.brands.add(act.dataset.brand);
+        go('#/shop');
+        return;
+      }
+      case 'toggle-size': {
+        const f = state.filters;
+        f.sizes.has(act.dataset.fsize) ? f.sizes.delete(act.dataset.fsize) : f.sizes.add(act.dataset.fsize);
+        act.setAttribute('aria-pressed', String(f.sizes.has(act.dataset.fsize)));
+        act.className = act.className.replace(/border-white\/15 text-white\/60 hover:border-white\/50/,'border-gold bg-gold/10 text-gold');
+        if(!f.sizes.has(act.dataset.fsize)) act.className = act.className.replace(/border-gold bg-gold\/10 text-gold/,'border-white/15 text-white/60 hover:border-white/50');
+        updateShopUI();
+        return;
+      }
+      case 'remove-chip': {
+        const f = state.filters, g = act.dataset.fgroup, v = act.dataset.value;
+        if(g==='brands') f.brands.delete(v);
+        if(g==='types') f.types.delete(v);
+        if(g==='conds') f.conds.delete(v);
+        if(g==='sizes') f.sizes.delete(v);
+        if(g==='price') f.price='all';
+        if(g==='wish') f.wish=false;
+        if(g==='query'){ f.query=''; const q=$('#shopQuery'); if(q) q.value=''; }
+        go('#/shop'); // re-render sidebar state
+        return;
+      }
+      case 'clear-filters': {
+        state.filters = { brands:new Set(), types:new Set(), conds:new Set(), sizes:new Set(), price:'all', wish:false, query:'', sort: state.filters.sort };
+        go('#/shop');
+        return;
+      }
+      case 'open-filters': {
+        $('#filterPanel').classList.remove('-translate-x-full');
+        const o=$('#filtersOverlay'); o.classList.remove('hidden');
+        document.body.style.overflow='hidden';
+        return;
+      }
+      case 'close-filters': case 'apply-filters': {
+        $('#filterPanel').classList.add('-translate-x-full');
+        const o=$('#filtersOverlay'); if(o) o.classList.add('hidden');
+        document.body.style.overflow='';
+        return;
+      }
+
+      /* --- misc UI --- */
+      case 'open-size-guide': openSizeGuide(); return;
+      case 'close-size-guide': closeSizeGuide(); return;
+      case 'search-toggle': {
+        const bar = $('#searchBar');
+        bar.classList.toggle('hidden');
+        if(!bar.classList.contains('hidden')) $('#searchInput').focus();
+        return;
+      }
+      case 'toggle-mobile-nav': {
+        $('#mobileNav').classList.remove('-translate-x-full');
+        const o=$('#mobileNavOverlay'); o.classList.remove('pointer-events-none'); o.classList.add('opacity-100');
+        document.body.style.overflow='hidden';
+        return;
+      }
+      case 'close-mobile-nav': {
+        $('#mobileNav').classList.add('-translate-x-full');
+        const o=$('#mobileNavOverlay'); o.classList.add('pointer-events-none'); o.classList.remove('opacity-100');
+        document.body.style.overflow='';
+        return;
+      }
+      case 'brand-scroll': {
+        $('#brandRow').scrollBy({ left: (+act.dataset.dir) * 340, behavior:'smooth' });
+        return;
+      }
+      case 'toast': toast(act.dataset.msg || 'Done'); return;
+    }
+  }
+
+  /* Card click → PDP (unless an action was handled) */
+  const card = e.target.closest('[data-pid]');
+  if(card && !e.target.closest('button')){
+    go('#/product/' + card.dataset.pid);
+    return;
+  }
+});
+
+/* Filter checkboxes / radios / sort / search — change + input */
+document.addEventListener('change', e=>{
+  const inp = e.target.closest('[data-fgroup]');
+  if(inp && !inp.dataset.action){
+    const f = state.filters, g = inp.dataset.fgroup;
+    if(g==='price'){ f.price = inp.value; updateShopUI(); return; }
+    if(g==='wish'){ f.wish = inp.checked; updateShopUI(); return; }
+    const set = g==='brands' ? f.brands : g==='types' ? f.types : f.conds;
+    inp.checked ? set.add(inp.value) : set.delete(inp.value);
+    updateShopUI();
+    return;
+  }
+  if(e.target.id === 'sortSel'){ state.filters.sort = e.target.value; updateShopUI(); }
+});
+document.addEventListener('input', e=>{
+  if(e.target.id === 'shopQuery'){ state.filters.query = e.target.value; updateShopUI(); }
+});
+
+/* Search form */
+document.addEventListener('submit', e=>{
+  if(e.target.id === 'searchForm'){
+    e.preventDefault();
+    state.filters.query = $('#searchInput').value.trim();
+    $('#searchBar').classList.add('hidden');
+    go('#/shop');
+  }
+  if(e.target.id === 'newsForm'){
+    e.preventDefault();
+    toast('Welcome to the list.');
+    e.target.reset();
+  }
+});
+
+/* Escape key closes topmost overlay */
+document.addEventListener('keydown', e=>{
+  if(e.key !== 'Escape') return;
+  if(!$('#sizeGuideModal').classList.contains('hidden')) return closeSizeGuide();
+  if(!$('#checkoutModal').classList.contains('hidden')) return closeCheckout();
+  if(!$('#cartDrawer').classList.contains('translate-x-full')) return closeCart();
+  if(!$('#mobileNav').classList.contains('-translate-x-full')) return document.querySelector('[data-action="close-mobile-nav"]').click();
+});
+
+/* Soft re-render so stock tags / wishlist hearts stay in sync */
+function refreshViewSoft(keepScroll){
+  const y = keepScroll ? window.scrollY : null;
+  const { name, id } = state.view;
+  renderView(name, id);
+  if(y !== null) window.scrollTo(0, y);
+}
+
+/* ================================================================
+   10. INIT
+================================================================ */
+renderCart();        // badges + (hidden) drawer contents
+handleRoute();       // initial route from location.hash
+})();
+</script>
+</body>
+</html>
